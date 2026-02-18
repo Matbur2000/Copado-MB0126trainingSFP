@@ -2,27 +2,29 @@
 
 private class AccountOperationsTest {
 
+    
+
     @isTest 
 
-    static void testHighRevenueRating() {
+    static void testSmallEmployeeCountRating() {
 
-        // Create test account with high revenue
+        // Arrange
 
         Account acc = new Account(
 
-            Name = 'Test High Revenue Account',
+            Name = 'Test Small Company',
 
-            AnnualRevenue = 2000000
+            NumberOfEmployees = 5
 
         );
 
         
 
-        insert acc;
-
-        
+        // Act
 
         Test.startTest();
+
+        insert acc;
 
         AccountOperations.updateRating(acc);
 
@@ -32,33 +34,35 @@ private class AccountOperationsTest {
 
         
 
-        // Verify the rating was set to Hot
+        // Assert
 
-        Account savedAcc = [SELECT Rating FROM Account WHERE Id = :acc.Id];
+        Account updatedAcc = [SELECT Rating FROM Account WHERE Id = :acc.Id];
 
-        System.assertEquals('Hot', savedAcc.Rating, 'Account with high revenue should be rated Hot');
+        System.assertEquals('Cold', updatedAcc.Rating, 'Account with less than 10 employees should be rated Cold');
 
     }
 
     @isTest 
 
-    static void testLowRevenueRating() {
+    static void testLargerEmployeeCountRating() {
+
+        // Arrange
 
         Account acc = new Account(
 
-            Name = 'Test Low Revenue Account',
+            Name = 'Test Larger Company',
 
-            AnnualRevenue = 500000
+            NumberOfEmployees = 15
 
         );
 
         
 
-        insert acc;
-
-        
+        // Act
 
         Test.startTest();
+
+        insert acc;
 
         AccountOperations.updateRating(acc);
 
@@ -68,29 +72,33 @@ private class AccountOperationsTest {
 
         
 
-        Account savedAcc = [SELECT Rating FROM Account WHERE Id = :acc.Id];
+        // Assert
 
-        System.assertEquals('Cold', savedAcc.Rating, 'Account with low revenue should be rated Cold');
+        Account updatedAcc = [SELECT Rating FROM Account WHERE Id = :acc.Id];
+
+        System.assertEquals(null, updatedAcc.Rating, 'Account with more than 10 employees should have null rating');
 
     }
 
     @isTest 
 
-    static void testNullRevenue() {
+    static void testNullEmployeeCount() {
+
+        // Arrange
 
         Account acc = new Account(
 
-            Name = 'Test Null Revenue Account'
+            Name = 'Test Null Employee Count Account'
 
         );
 
         
 
-        insert acc;
-
-        
+        // Act
 
         Test.startTest();
+
+        insert acc;
 
         AccountOperations.updateRating(acc);
 
@@ -100,9 +108,11 @@ private class AccountOperationsTest {
 
         
 
-        Account savedAcc = [SELECT Rating FROM Account WHERE Id = :acc.Id];
+        // Assert
 
-        System.assertEquals(null, savedAcc.Rating, 'Account with null revenue should have null rating');
+        Account updatedAcc = [SELECT Rating FROM Account WHERE Id = :acc.Id];
+
+        System.assertEquals(null, updatedAcc.Rating, 'Account with null employee count should have null rating');
 
     }
 
